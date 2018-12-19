@@ -1,3 +1,6 @@
+<%@page import="com.mysql.jdbc.Driver.DBUtil"%>
+<%@page import="java.sql.PreparedStatement"%>
+<%@page import="java.sql.Connection"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%
@@ -10,6 +13,26 @@
 	String userEm=request.getParameter("userEm");
 	String gender=request.getParameter("gender");
 	String[] hobby=request.getParameterValues("hobby");
+	
+	Connection conn= DBUtil.getMySQLConnection(); //db연결
+	String sql="insert into login(loginId,password,userNm,userAdr,userEm,gender,hobby) values(?,?,?,?,?,?,?)";
+	PreparedStatement pstmt=conn.prepareStatement(sql);
+	
+	pstmt.setString(1,loginId);
+	pstmt.setString(2,password);
+	pstmt.setString(3,userNm);
+	pstmt.setString(4,userAdr);
+	pstmt.setString(5,userEm);
+	pstmt.setString(6,gender);
+	
+	for(int i=0; i<hobby.length; i++){
+	pstmt.setString(7,hobby[i]);
+	}
+	
+	pstmt.executeUpdate();
+	
+	DBUtil.close(pstmt);
+	DBUtil.close(conn);
 	
 	%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
